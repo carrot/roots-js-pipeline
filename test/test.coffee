@@ -14,6 +14,9 @@ run = require('child_process').exec
 should.file_exist = (path) ->
   fs.existsSync(path).should.be.ok
 
+should.file_not_exist = (path) ->
+  fs.existsSync(path).should.not.be.ok
+
 should.have_content = (path) ->
   fs.readFileSync(path).length.should.be.above(1)
 
@@ -93,3 +96,44 @@ describe 'hash', ->
     p = path.join(@public, 'index.html')
     filename = fs.readdirSync(path.join(@public, 'js'))[0]
     should.contain(p, filename)
+
+describe 'manifest', ->
+
+  before (done) -> compile_fixture.call(@, 'manifest', done)
+
+  it 'js function should output a tag for each file', ->
+    p = path.join(@public, 'index.html')
+    should.contain(p, 'j-snizzle.js')
+    should.contain(p, 'p-nizzle.js')
+    should.contain(p, 'test.js')
+    should.contain(p, 'wow.js')
+
+  it 'files should have correct content', ->
+    p1 = path.join(@public, 'js/test.js')
+    p2 = path.join(@public, 'js/wow.js')
+    p3 = path.join(@public, 'js/jquizzy/j-snizzle.js')
+    p4 = path.join(@public, 'js/jquizzy/p-nizzle.js')
+    should.file_exist(p1)
+    should.contain(p1, "console.log('tests');")
+    should.file_exist(p2)
+    should.contain(p2, '9000 + 1;')
+    should.file_exist(p3)
+    should.contain(p3, "function jquizzle(izzle){")
+    should.file_exist(p4)
+    should.contain(p4, "$ = 'wow'")
+
+  it 'manifest file should be ignored from output', ->
+    should.file_not_exist(path.join(@public, 'js/manifest.yml'))
+
+describe 'concat-manifest', ->
+
+  before (done) -> compile_fixture.call(@, 'concat-manifest', done)
+
+  it 'js function should output a tag for the build file', ->
+    p = path.join(@public, 'index.html')
+    should.contain(p, 'build.js')
+
+  it 'build file should have correct content', ->
+    p = path.join(@public, 'js/build.js')
+    should.file_exist(p)
+    should.contain(p, "function jquizzle(izzle){\n  return 'pizzle'\n}\n$ = 'wow'\n(function() {\n  console.log('tests');\n\n}).call(this);\n(function() {\n  9000 + 1;\n\n}).call(this);")

@@ -1,0 +1,41 @@
+{
+  "name": "js-pipeline",
+  "version": "0.0.0",
+  "author": "Jeff Escalante <hello@jenius.me>",
+  "description": "roots extension for handling js production builds",
+  "license": "MIT",
+  "keywords": [
+    "roots-extension",
+    "js",
+    "pipeline"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/carrot/roots-js-pipeline.git"
+  },
+  "main": "lib",
+  "dependencies": {
+    "lodash": "2.x",
+    "minimatch": "0.2.x",
+    "roots-util": "0.0.2",
+    "uglify-js": "2.4.x"
+  },
+  "devDependencies": {
+    "coffee-script": "1.7.x",
+    "when": "3.x",
+    "mocha": "*",
+    "should": "*",
+    "glob": "*",
+    "rimraf": "*",
+    "roots": "3.x"
+  },
+  "peerDependencies": {
+    "roots": "3.x"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  }
+}

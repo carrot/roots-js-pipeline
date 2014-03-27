@@ -1,6 +1,6 @@
 {
   "name": "js-pipeline",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Jeff Escalante <hello@jenius.me>",
   "description": "roots extension for handling js production builds",
   "license": "MIT",

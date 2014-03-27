@@ -11,7 +11,7 @@ module.exports = (opts) ->
 
   opts = _.defaults opts,
     files: ['assets/js/**']
-    main: false
+    manifest: false
     out: false
     minify: false
     hash: false
@@ -36,11 +36,11 @@ module.exports = (opts) ->
       @file_map = {}
       @util = new RootsUtil(@roots)
 
-      if opts.main
-        @roots.config.ignores.push(opts.main)
-        opts.main = load_manifest_file.call(@, opts.main)
+      if opts.manifest
+        @roots.config.ignores.push(opts.manifest)
+        opts.manifest = load_manifest_file.call(@, opts.manifest)
 
-      @files = opts.main or opts.files
+      @files = opts.manifest or opts.files
 
       @roots.config.locals ?= {}
       @roots.config.locals.js = =>

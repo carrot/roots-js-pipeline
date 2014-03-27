@@ -4,18 +4,21 @@ _         = require 'lodash'
 minimatch = require 'minimatch'
 UglifyJS  = require 'uglify-js'
 crypto    = require 'crypto'
-RootsUtil  = require 'roots-util'
+RootsUtil = require 'roots-util'
+yaml      = require 'js-yaml'
 
 module.exports = (opts) ->
 
   opts = _.defaults opts,
-    files: 'assets/js/**'
+    files: ['assets/js/**']
+    manifest: false
     out: false
     minify: false
     hash: false
     opts: {}
 
   opts.opts.fromString = true
+  opts.files = Array.prototype.concat(opts.files)
 
   class JSPipeline
 
@@ -30,8 +33,14 @@ module.exports = (opts) ->
 
     constructor: (@roots) ->
       @category = 'js-pipeline'
-      @contents = ''
+      @file_map = {}
       @util = new RootsUtil(@roots)
+
+      if opts.manifest
+        @roots.config.ignores.push(opts.manifest)
+        opts.manifest = load_manifest_file.call(@, opts.manifest)
+
+      @files = opts.manifest or opts.files
 
       @roots.config.locals ?= {}
       @roots.config.locals.js = =>
@@ -40,9 +49,8 @@ module.exports = (opts) ->
         if opts.out
           paths.push(path.sep + opts.out)
         else
-          files = @util.files(opts.files)
-          files = files.map((f) => path.sep + @util.output_path(f.relative, 'js').relative)
-          paths = paths.concat(files)
+          for matcher in @files
+            paths = paths.concat(get_output_paths.call(@, matcher))
         
         paths.map((p) -> "<script src='#{p}'></script>").join("\n")
 
@@ -52,7 +60,7 @@ module.exports = (opts) ->
 
     fs: ->
       extract: true
-      detect: (f) -> minimatch(f.relative, opts.files)
+      detect: (f) => _.any(@files, minimatch.bind(@, f.relative))
 
     ###*
      * After compile, if concat is happening, grab the contents and save them
@@ -60,8 +68,9 @@ module.exports = (opts) ->
     ###
 
     compile_hooks: ->
-      after_file: (ctx) => if opts.out then @contents += ctx.content
       write: -> !opts.out
+      after_file: (ctx) =>
+        if opts.out then @file_map[ctx.file.relative] = ctx.content
 
     ###*
      * Write the output file if necessary.
@@ -71,12 +80,25 @@ module.exports = (opts) ->
       after: (ctx) =>
         if not opts.out then return
 
-        if opts.minify then @contents = UglifyJS.minify(@contents, opts.opts).code
+        all_contents = ''
+        for matcher in @files
+          for file, content of @file_map when minimatch(file, matcher)
+            all_contents += content
+
+        if opts.minify
+          all_contents = UglifyJS.minify(all_contents, opts.opts).code
 
         if opts.hash
-          hash = crypto.createHash('md5').update(@contents, 'utf8')
+          hash = crypto.createHash('md5').update(all_contents, 'utf8')
           res = opts.out.split('.')
           res.splice(-1, 0, hash.digest('hex'))
           opts.out = res.join('.')
 
-        @util.write(opts.out, @contents)
+        @util.write(opts.out, all_contents)
+
+    load_manifest_file = (f) ->
+      res = yaml.safeLoad(fs.readFileSync(path.join(@roots.root, f), 'utf8'))
+      res.map((m) -> path.join(path.dirname(f), m))
+
+    get_output_paths = (files) ->
+      @util.files(files).map((f) => path.sep + @util.output_path(f.relative, 'js').relative)

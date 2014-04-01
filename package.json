@@ -19,16 +19,14 @@
     "minimatch": "0.2.x",
     "uglify-js": "2.4.x",
     "js-yaml": "3.x",
-    "roots-util": "0.0.2"
+    "roots-util": "0.0.4"
   },
   "devDependencies": {
     "coffee-script": "1.7.x",
-    "when": "3.x",
     "mocha": "*",
     "should": "*",
-    "glob": "*",
-    "rimraf": "*",
-    "roots": "3.x"
+    "roots": "3.x",
+    "jade": "^1.3.0"
   },
   "peerDependencies": {
     "roots": "3.x"

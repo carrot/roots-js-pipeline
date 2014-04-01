@@ -152,6 +152,24 @@ You might see output like this, with each file loaded on its own:
 <script src='/js/baz.js'></script>
 ```
 
+It's also possible that you might want to change the path from which the js is loaded, rather than using the absolute path you can see referenced above. If you do want to do this, you can pass an alternate path as a string argument to the `js` function. The default argument is a `/` such that they load from the absolute root. So for example, if you were to run the function as such:
+
+```jade
+//- index.jade
+p here's my great website
+!= js('../')
+```
+
+You would see output like this:
+
+```html
+<!-- public/index.html -->
+<p>here's my great website</p>
+<script src='../js/foo.js'></script>
+<script src='../js/bar.js'></script>
+<script src='../js/baz.js'></script>
+```
+
 ### Options
 
 ##### files

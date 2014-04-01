@@ -1,45 +1,22 @@
-path   = require 'path'
-fs     = require 'fs'
-should = require 'should'
-glob   = require 'glob'
-rimraf = require 'rimraf'
-Roots  = require 'roots'
-W      = require 'when'
-nodefn = require 'when/node/function'
-_path  = path.join(__dirname, 'fixtures')
-run = require('child_process').exec
+path      = require 'path'
+fs        = require 'fs'
+should    = require 'should'
+Roots     = require 'roots'
+_path     = path.join(__dirname, 'fixtures')
+RootsUtil = require 'roots-util'
+h = new RootsUtil.Helpers(base: _path)
 
 # setup, teardown, and utils
 
-should.file_exist = (path) ->
-  fs.existsSync(path).should.be.ok
-
-should.file_not_exist = (path) ->
-  fs.existsSync(path).should.not.be.ok
-
-should.have_content = (path) ->
-  fs.readFileSync(path).length.should.be.above(1)
-
-should.contain = (path, content) ->
-  fs.readFileSync(path, 'utf8').indexOf(content).should.not.equal(-1)
-
 compile_fixture = (fixture_name, done) ->
-  @path = path.join(_path, fixture_name)
-  @public = path.join(@path, 'public')
-  project = new Roots(@path)
-  project.compile().on('error', done).on('done', done)
+  @public = path.join(fixture_name, 'public')
+  h.project.compile(Roots, fixture_name, done)
 
 before (done) ->
-  tasks = []
-  for d in glob.sync("#{_path}/*/package.json")
-    p = path.dirname(d)
-    if fs.existsSync(path.join(p, 'node_modules')) then continue
-    console.log "installing deps for #{d.replace(_path,'').replace('/package.json','')}...".grey
-    tasks.push nodefn.call(run, "cd #{p}; npm install")
-  W.all(tasks).then(-> console.log(''); done())
+  h.project.install_dependencies('*', done)
 
 after ->
-  rimraf.sync(public_dir) for public_dir in glob.sync('test/fixtures/**/public')
+  h.project.remove_folders('**/public')
 
 # tests
 
@@ -49,16 +26,16 @@ describe 'development', ->
 
   it 'js function should output a tag for each file', ->
     p = path.join(@public, 'index.html')
-    should.contain(p, 'test.js')
-    should.contain(p, 'wow.js')
+    h.file.contains(p, 'test.js').should.be.ok
+    h.file.contains(p, 'wow.js').should.be.ok
 
   it 'files should have correct content', ->
     p1 = path.join(@public, 'js/test.js')
     p2 = path.join(@public, 'js/wow.js')
-    should.file_exist(p1)
-    should.contain(p1, "console.log('tests');")
-    should.file_exist(p2)
-    should.contain(p2, '9000 + 1;')
+    h.file.exists(p1).should.be.ok
+    h.file.contains(p1, "console.log('tests');").should.be.ok
+    h.file.exists(p2).should.be.ok
+    h.file.contains(p2, '9000 + 1;').should.be.ok
 
 describe 'concat', ->
 
@@ -66,13 +43,13 @@ describe 'concat', ->
 
   it 'js function should output a tag for the build file', ->
     p = path.join(@public, 'index.html')
-    should.contain(p, 'build.js')
+    h.file.contains(p, 'build.js').should.be.ok
 
   it 'build file should have correct content', ->
     p = path.join(@public, 'js/build.js')
-    should.file_exist(p)
-    should.contain(p, "console.log('tests');")
-    should.contain(p, '9000 + 1;')
+    h.file.exists(p).should.be.ok
+    h.file.contains(p, "console.log('tests');").should.be.ok
+    h.file.contains(p, '9000 + 1;').should.be.ok
 
 describe 'concat-minify', ->
 
@@ -80,13 +57,13 @@ describe 'concat-minify', ->
 
   it 'js function should output a tag for the build file', ->
     p = path.join(@public, 'index.html')
-    should.contain(p, 'build.min.js')
+    h.file.contains(p, 'build.min.js').should.be.ok
 
   it 'build file should have correct content', ->
     p = path.join(@public, 'js/build.min.js')
-    should.file_exist(p)
-    should.contain(p, 'console.log(9001)')
-    should.contain(p, 'console.log(100)')
+    h.file.exists(p).should.be.ok
+    h.file.contains(p, 'console.log(9001)').should.be.ok
+    h.file.contains(p, 'console.log(100)').should.be.ok
 
 describe 'hash', ->
 
@@ -94,8 +71,8 @@ describe 'hash', ->
 
   it 'js function should output a tag for the hashed build file', ->
     p = path.join(@public, 'index.html')
-    filename = fs.readdirSync(path.join(@public, 'js'))[0]
-    should.contain(p, filename)
+    filename = fs.readdirSync(path.join(_path, @public, 'js'))[0]
+    h.file.contains(p, filename).should.be.ok
 
 describe 'manifest', ->
 
@@ -103,28 +80,28 @@ describe 'manifest', ->
 
   it 'js function should output a tag for each file', ->
     p = path.join(@public, 'index.html')
-    should.contain(p, 'j-snizzle.js')
-    should.contain(p, 'p-nizzle.js')
-    should.contain(p, 'test.js')
-    should.contain(p, 'wow.js')
-    should.contain(p, 'doge-wow.shh.amaze.js')
+    h.file.contains(p, 'j-snizzle.js').should.be.ok
+    h.file.contains(p, 'p-nizzle.js').should.be.ok
+    h.file.contains(p, 'test.js').should.be.ok
+    h.file.contains(p, 'wow.js').should.be.ok
+    h.file.contains(p, 'doge-wow.shh.amaze.js').should.be.ok
 
   it 'files should have correct content', ->
     p1 = path.join(@public, 'js/test.js')
     p2 = path.join(@public, 'js/wow.js')
     p3 = path.join(@public, 'js/jquizzy/j-snizzle.js')
     p4 = path.join(@public, 'js/jquizzy/p-nizzle.js')
-    should.file_exist(p1)
-    should.contain(p1, "console.log('tests');")
-    should.file_exist(p2)
-    should.contain(p2, '9000 + 1;')
-    should.file_exist(p3)
-    should.contain(p3, "function jquizzle(izzle){")
-    should.file_exist(p4)
-    should.contain(p4, "$ = 'wow'")
+    h.file.exists(p1).should.be.ok
+    h.file.contains(p1, "console.log('tests');").should.be.ok
+    h.file.exists(p2).should.be.ok
+    h.file.contains(p2, '9000 + 1;').should.be.ok
+    h.file.exists(p3).should.be.ok
+    h.file.contains(p3, "function jquizzle(izzle){").should.be.ok
+    h.file.exists(p4).should.be.ok
+    h.file.contains(p4, "$ = 'wow'").should.be.ok
 
   it 'manifest file should be ignored from output', ->
-    should.file_not_exist(path.join(@public, 'js/manifest.yml'))
+    h.file.doesnt_exist(path.join(@public, 'js/manifest.yml')).should.be.ok
 
 describe 'concat-manifest', ->
 
@@ -132,12 +109,12 @@ describe 'concat-manifest', ->
 
   it 'js function should output a tag for the build file', ->
     p = path.join(@public, 'index.html')
-    should.contain(p, 'build.js')
+    h.file.contains(p, 'build.js').should.be.ok
 
   it 'build file should have correct content', ->
     p = path.join(@public, 'js/build.js')
-    should.file_exist(p)
-    should.contain(p, "function jquizzle(izzle){\n  return 'pizzle'\n}\n$ = 'wow'\n(function() {\n  console.log('tests');\n\n}).call(this);\n(function() {\n  9000 + 1;\n\n}).call(this);")
+    h.file.exists(p).should.be.ok
+    h.file.contains(p, "function jquizzle(izzle){\n  return 'pizzle'\n}\n$ = 'wow'\n(.should.be.okfunction() {\n  console.log('tests');\n\n}).call(this);\n(function() {\n  9000 + 1;\n\n}).call(this);")
 
 describe 'path-prefix', ->
 
@@ -145,5 +122,5 @@ describe 'path-prefix', ->
 
   it 'should prefix the path correctly', ->
     p = path.join(@public, 'index.html')
-    should.contain(p, '../js/test.js')
-    should.contain(p, '../js/wow.js')
+    h.file.contains(p, '../js/test.js').should.be.ok
+    h.file.contains(p, '../js/wow.js').should.be.ok

@@ -43,14 +43,14 @@ module.exports = (opts) ->
       @files = opts.manifest or opts.files
 
       @roots.config.locals ?= {}
-      @roots.config.locals.js = =>
+      @roots.config.locals.js = (prefix = path.sep) =>
         paths = []
 
         if opts.out
           paths.push(path.sep + opts.out)
         else
           for matcher in @files
-            paths = paths.concat(get_output_paths.call(@, matcher))
+            paths = paths.concat(get_output_paths.call(@, matcher, prefix))
 
         paths.map((p) -> "<script src='#{p}'></script>").join("\n")
 
@@ -100,7 +100,7 @@ module.exports = (opts) ->
       res = yaml.safeLoad(fs.readFileSync(path.join(@roots.root, f), 'utf8'))
       res.map((m) -> path.join(path.dirname(f), m))
 
-    get_output_paths = (files) ->
+    get_output_paths = (files, prefix) ->
       @util.files(files).map (f) =>
         filePath = @util.output_path(f.relative).relative
-        path.sep + filePath.replace(path.extname(filePath), '.js')
+        path.join(prefix, filePath.replace(path.extname(filePath), '.js'))

@@ -138,3 +138,12 @@ describe 'concat-manifest', ->
     p = path.join(@public, 'js/build.js')
     should.file_exist(p)
     should.contain(p, "function jquizzle(izzle){\n  return 'pizzle'\n}\n$ = 'wow'\n(function() {\n  console.log('tests');\n\n}).call(this);\n(function() {\n  9000 + 1;\n\n}).call(this);")
+
+describe 'path-prefix', ->
+
+  before (done) -> compile_fixture.call(@, 'path-prefix', done)
+
+  it 'should prefix the path correctly', ->
+    p = path.join(@public, 'index.html')
+    should.contain(p, '../js/test.js')
+    should.contain(p, '../js/wow.js')

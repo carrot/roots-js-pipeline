@@ -101,4 +101,6 @@ module.exports = (opts) ->
       res.map((m) -> path.join(path.dirname(f), m))
 
     get_output_paths = (files) ->
-      @util.files(files).map((f) => path.sep + @util.output_path(f.relative, 'js').relative)
+      @util.files(files).map (f) =>
+        filePath = @util.output_path(f.relative).relative
+        path.sep + filePath.replace(path.extname(filePath), '.js')

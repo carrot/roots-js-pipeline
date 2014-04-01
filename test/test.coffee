@@ -107,6 +107,7 @@ describe 'manifest', ->
     should.contain(p, 'p-nizzle.js')
     should.contain(p, 'test.js')
     should.contain(p, 'wow.js')
+    should.contain(p, 'doge-wow.shh.amaze.js')
 
   it 'files should have correct content', ->
     p1 = path.join(@public, 'js/test.js')

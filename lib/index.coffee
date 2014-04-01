@@ -27,7 +27,7 @@ module.exports = (opts) ->
      * The view function grabs either the single output path or collects
      * all non-ignored output paths for the input files and returns them
      * as html link tags.
-     * 
+     *
      * @param  {Function} @roots - Roots class instance
     ###
 
@@ -51,7 +51,7 @@ module.exports = (opts) ->
         else
           for matcher in @files
             paths = paths.concat(get_output_paths.call(@, matcher))
-        
+
         paths.map((p) -> "<script src='#{p}'></script>").join("\n")
 
     ###*
@@ -101,4 +101,6 @@ module.exports = (opts) ->
       res.map((m) -> path.join(path.dirname(f), m))
 
     get_output_paths = (files) ->
-      @util.files(files).map((f) => path.sep + @util.output_path(f.relative, 'js').relative)
+      @util.files(files).map (f) =>
+        filePath = @util.output_path(f.relative).relative
+        path.sep + filePath.replace(path.extname(filePath), '.js')

@@ -23,14 +23,15 @@
   },
   "devDependencies": {
     "coffee-script": "1.7.x",
-    "mocha": "*",
-    "should": "*",
-    "roots": "3.x",
-    "jade": "^1.3.0",
     "coffeelint": "*",
+    "coveralls": "*",
     "istanbul": "*",
+    "jade": "^1.3.0",
+    "mocha": "*",
     "mocha-lcov-reporter": "*",
-    "coveralls": "*"
+    "roots": "3.x",
+    "roots-util": "0.0.4",
+    "should": "*"
   },
   "peerDependencies": {
     "roots": "3.x"

@@ -22,7 +22,7 @@ after ->
 
 describe 'development', ->
 
-  before (done) -> compile_fixture.call(@, 'development', done)
+  before (done) -> compile_fixture.call(@, 'development', -> done())
 
   it 'js function should output a tag for each file', ->
     p = path.join(@public, 'index.html')
@@ -39,7 +39,7 @@ describe 'development', ->
 
 describe 'concat', ->
 
-  before (done) -> compile_fixture.call(@, 'concat', done)
+  before (done) -> compile_fixture.call(@, 'concat', -> done())
 
   it 'js function should output a tag for the build file', ->
     p = path.join(@public, 'index.html')
@@ -53,7 +53,7 @@ describe 'concat', ->
 
 describe 'concat-minify', ->
 
-  before (done) -> compile_fixture.call(@, 'concat-minify', done)
+  before (done) -> compile_fixture.call(@, 'concat-minify', -> done())
 
   it 'js function should output a tag for the build file', ->
     p = path.join(@public, 'index.html')
@@ -67,7 +67,7 @@ describe 'concat-minify', ->
 
 describe 'hash', ->
 
-  before (done) -> compile_fixture.call(@, 'hash', done)
+  before (done) -> compile_fixture.call(@, 'hash', -> done())
 
   it 'js function should output a tag for the hashed build file', ->
     p = path.join(@public, 'index.html')
@@ -76,7 +76,7 @@ describe 'hash', ->
 
 describe 'manifest', ->
 
-  before (done) -> compile_fixture.call(@, 'manifest', done)
+  before (done) -> compile_fixture.call(@, 'manifest', -> done())
 
   it 'js function should output a tag for each file', ->
     p = path.join(@public, 'index.html')
@@ -105,7 +105,7 @@ describe 'manifest', ->
 
 describe 'concat-manifest', ->
 
-  before (done) -> compile_fixture.call(@, 'concat-manifest', done)
+  before (done) -> compile_fixture.call(@, 'concat-manifest', -> done())
 
   it 'js function should output a tag for the build file', ->
     p = path.join(@public, 'index.html')
@@ -118,7 +118,7 @@ describe 'concat-manifest', ->
 
 describe 'path-prefix', ->
 
-  before (done) -> compile_fixture.call(@, 'path-prefix', done)
+  before (done) -> compile_fixture.call(@, 'path-prefix', -> done())
 
   it 'should prefix the path correctly', ->
     p = path.join(@public, 'index.html')

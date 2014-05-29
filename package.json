@@ -16,7 +16,7 @@
   "main": "lib",
   "dependencies": {
     "lodash": "2.x",
-    "minimatch": "0.2.x",
+    "minimatch": "0.3.x",
     "uglify-js": "2.4.x",
     "js-yaml": "3.x",
     "roots-util": "0.0.4"

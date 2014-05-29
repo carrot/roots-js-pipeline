@@ -1,7 +1,7 @@
 Roots JS Pipeline
 =================
 
-[![npm](https://badge.fury.io/js/js-pipeline.png)](http://badge.fury.io/js/js-pipeline) [![tests](https://travis-ci.org/carrot/roots-js-pipeline.png?branch=master)](https://travis-ci.org/carrot/roots-js-pipeline) [![dependencies](https://david-dm.org/carrot/roots-js-pipeline.png?theme=shields.io)](https://david-dm.org/carrot/roots-js-pipeline)
+[![npm](http://img.shields.io/npm/v/js-pipeline.svg?style=flat)](https://badge.fury.io/js/js-pipeline) [![tests](http://img.shields.io/travis/carrot/roots-js-pipeline/master.svg?style=flat)](https://travis-ci.org/carrot/roots-js-pipeline) [![coverage](http://img.shields.io/coveralls/carrot/roots-js-pipeline.svg?style=flat)](https://coveralls.io/r/carrot/roots-js-pipeline) [![dependencies](http://img.shields.io/gemnasium/carrot/roots-js-pipeline.svg?style=flat)](https://gemnasium.com/carrot/roots-js-pipeline)
 
 Roots js pipeline is an asset pipeline for javascript files which optionally concatenates and/or minifies for production builds.
 

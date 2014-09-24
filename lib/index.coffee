@@ -38,9 +38,9 @@ module.exports = (opts) ->
 
       if opts.manifest
         @roots.config.ignores.push(opts.manifest)
-        opts.manifest = load_manifest_file.call(@, opts.manifest)
+        @manifest = load_manifest_file.call(@, opts.manifest)
 
-      @files = opts.manifest or opts.files
+      @files = @manifest or opts.files
 
       @roots.config.locals ?= {}
       @roots.config.locals.js = (prefix = path.sep) =>

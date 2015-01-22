@@ -72,7 +72,7 @@ describe 'hash', ->
   it 'js function should output a tag for the hashed build file', ->
     p = path.join(@public, 'index.html')
     filename = fs.readdirSync(path.join(_path, @public, 'js'))[0]
-    
+
     h.file.contains(p, filename).should.be.ok
 
 describe 'manifest', ->

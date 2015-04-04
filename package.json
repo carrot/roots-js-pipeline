@@ -29,8 +29,7 @@
     "jade": "1.x",
     "mocha": "2.x",
     "mocha-lcov-reporter": "0.0.1",
-    "roots": "3.0.0-rc.10",
-    "roots-util": "0.1.x",
+    "roots": "3.x",
     "should": "4.x"
   },
   "scripts": {

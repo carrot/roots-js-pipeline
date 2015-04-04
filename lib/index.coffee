@@ -18,6 +18,7 @@ module.exports = (opts) ->
     opts: {}
 
   opts.opts.fromString = true
+  opts.opts.comments = true
   opts.files = Array.prototype.concat(opts.files)
 
   class JSPipeline

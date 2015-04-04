@@ -34,6 +34,7 @@ describe 'development', ->
     p2 = path.join(@public, 'js/wow.js')
     h.file.exists(p1).should.be.ok
     h.file.contains(p1, "console.log('tests');").should.be.ok
+    h.file.contains(p1, "@preserve").should.be.ok
     h.file.exists(p2).should.be.ok
     h.file.contains(p2, '9000 + 1;').should.be.ok
 

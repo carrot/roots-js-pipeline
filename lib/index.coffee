@@ -84,7 +84,7 @@ module.exports = (opts) ->
         all_contents = ''
         for matcher in @files
           for file, content of @file_map when minimatch(file, matcher)
-            all_contents += content
+            all_contents += content + "\n"
 
         if opts.minify
           all_contents = UglifyJS.minify(all_contents, opts.opts).code

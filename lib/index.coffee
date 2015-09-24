@@ -55,6 +55,12 @@ module.exports = (opts) ->
 
         paths.map((p) -> "<script src='#{p}'></script>").join("\n")
 
+      @roots.config.locals.js_path = (prefix = '') =>
+        if opts.out
+          "#{prefix}#{opts.out}"
+        else
+          @roots.config.locals.js(prefix)
+    
     ###*
      * Minimatch runs against each path, quick and easy.
     ###

@@ -126,3 +126,21 @@ describe 'path-prefix', ->
     p = path.join(@public, 'index.html')
     h.file.contains(p, '../js/test.js').should.be.ok
     h.file.contains(p, '../js/wow.js').should.be.ok
+
+describe 'path-only', ->
+
+  before (done) -> compile_fixture.call(@, 'path-only', -> done())
+
+  it 'should only output the file path', ->
+    p = path.join(@public, 'index.html')
+    h.file.contains(p, 'js/build.js').should.be.ok
+    h.file.contains(p, 'script').should.not.be.ok
+
+describe 'path-only-prefix', ->
+
+  before (done) -> compile_fixture.call(@, 'path-only-prefix', -> done())
+
+  it 'should prefix the path correctly', ->
+    p = path.join(@public, 'index.html')
+    h.file.contains(p, '../js/build.js').should.be.ok
+    h.file.contains(p, 'script').should.not.be.ok
